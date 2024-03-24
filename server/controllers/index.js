@@ -2,7 +2,8 @@
 const models = require('../models');
 
 // get the Cat and dog models
-const { Cat, Dog } = models;
+const { Cat } = models;
+
 
 // Function to handle rendering the index page.
 const hostIndex = async (req, res) => {
