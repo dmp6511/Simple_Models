@@ -101,6 +101,11 @@ const hostPage3 = (req, res) => {
   res.render('page3');
 };
 
+// host page 4
+const hostPage4 = (req, res) => {
+  res.render('page4');
+};
+
 // Get name will return the name of the last added cat.
 const getName = async (req, res) => {
   try {
@@ -207,12 +212,12 @@ const setName = async (req, res) => {
 // create a new dog in the database
 const setDog = async (req, res) => {
   // no empty fields
-  if (!req.body.name || !req.body.breed || !req.body.age) {
+  if (!req.body.firstname || !req.body.lastname || !req.body.breed || !req.body.age) {
     return res.status(400).json({ error: 'name, breed, and age are all required' });
   };
 
   const dogData = {
-    name: req.body.name,
+    name: `${req.body.firstname} ${req.body.lastname}`,
     breed: req.body.breed,
     age: req.body.age,
   };
@@ -337,6 +342,7 @@ module.exports = {
   page1: hostPage1,
   page2: hostPage2,
   page3: hostPage3,
+  page4: hostPage4,
   getName,
   getDog,
   setName,
