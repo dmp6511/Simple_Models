@@ -138,7 +138,7 @@ const getDog = async (req, res) => {
 
     // if found, store it
     if (doc) {
-      return res.json({ name: doc.name });
+      return res.json({ name: doc.name, breed: doc.breed, age: doc.age });
     }
     // else return a 404
     return res.status(404).json({ error: 'No doggos found' });
@@ -355,6 +355,27 @@ const updateLast = (req, res) => {
   });
 };
 
+
+// update dog age by 1 when searched
+const updateDog = (req, res) => {
+  const updatePromise = Dog.findOneAndUpdate({}, { $inc: { age: 1 } }, {
+    returnDocument: 'after',
+    sort: { createdDate: 'descending' },
+  }).lean().exec();
+
+  updatePromise.then((doc) => res.json({
+    name: doc.name,
+    breed: doc.breed,
+    age: doc.age,
+  }));
+
+  //error handling
+  updatePromise.catch((err) => {
+    console.log(err);
+    return res.status(500).json({ error: 'Something went wrong' });
+  });
+};
+
 // A function to send back the 404 page.
 const notFound = (req, res) => {
   res.status(404).render('notFound', {
@@ -374,6 +395,7 @@ module.exports = {
   setName,
   setDog,
   updateLast,
+  updateDog,
   searchName,
   searchDog,
   notFound,
