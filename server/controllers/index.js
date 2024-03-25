@@ -101,8 +101,19 @@ const hostPage3 = (req, res) => {
 };
 
 // host page 4
-const hostPage4 = (req, res) => {
-  res.render('page4');
+const hostPage4 = async (req, res) => {
+
+  // list the dogs, if any
+  try {
+    const docs = await Dog.find({}).lean().exec();
+
+    // send it back to the page
+    return res.render('page4', { dogs: docs });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'failed to find doggos' });
+  }
+
 };
 
 // Get name will return the name of the last added cat.
@@ -283,10 +294,8 @@ const searchName = async (req, res) => {
   return res.json({ name: doc.name, beds: doc.bedsOwned });
 };
 
-
 // searching for a dog by name
 const searchDog = async (req, res) => {
-
   // make sure name exists
   if (!req.query.name) {
     return res.status(400).json({ error: 'Name is required to perform a search' });
@@ -308,8 +317,6 @@ const searchDog = async (req, res) => {
   // return the dog
   return res.json({ name: doc.name, breed: doc.breed, age: doc.age });
 };
-
-
 
 /* A function for updating the last cat added to the database.
    Usually database updates would be a more involved process, involving finding
@@ -355,7 +362,6 @@ const updateLast = (req, res) => {
   });
 };
 
-
 // update dog age by 1 when searched
 const updateDog = (req, res) => {
   const updatePromise = Dog.findOneAndUpdate({}, { $inc: { age: 1 } }, {
@@ -369,7 +375,7 @@ const updateDog = (req, res) => {
     age: doc.age,
   }));
 
-  //error handling
+  // error handling
   updatePromise.catch((err) => {
     console.log(err);
     return res.status(500).json({ error: 'Something went wrong' });
